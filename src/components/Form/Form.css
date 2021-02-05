@@ -1,0 +1,11 @@
+.form__description {
+  /*display: flex;*/
+}
+
+.form__redirect-title {
+  display: inline;
+}
+
+.form__redirect-button {
+  display: inline;
+}
