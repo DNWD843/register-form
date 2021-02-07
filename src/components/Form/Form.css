@@ -67,6 +67,10 @@
   flex-direction: column;
 }
 
+.form__field_type_checkbox {
+  align-items: flex-end;
+}
+
 .form__input-label {
   font-family: IBM Plex Sans, Arial, Helvetica, sans-serif;
   font-style: normal;
@@ -112,14 +116,24 @@
   margin: 0 0 8px;
 }
 
-.form__input_type_checkbox {
+.form__input-checkbox {
+  display: none;
+}
+
+.form__input-checkbox + .form__input_type_checkbox {
+  width: 24px;
+  height: 24px;
   border-radius: 4px;
   margin: 0 8px 0 0;
   padding: 0;
 }
 
-.form__input_type_checkbox:checked {
+.form__input-checkbox:checked + .form__input_type_checkbox {
+  width: 24px;
+  height: 24px;
   background-image: url('../../images/icon.svg');
+  background-size: cover;
+  border: 1px solid #0880ae;
 }
 
 .form__accept-title {

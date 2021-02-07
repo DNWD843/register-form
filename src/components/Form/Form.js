@@ -69,13 +69,17 @@ function Form() {
               <option value="esp">Испанский</option>
             </select>
           </div>
-          <div className="form__field">
-            <input
-              type="checkbox"
-              id="accept"
-              name="accept"
-              className="form__input form__input_type_checkbox"
-            ></input>
+          <div className="form__field form__field_type_checkbox">
+            <label for="accept" className="checkbox-label">
+              <input
+                type="checkbox"
+                id="accept"
+                name="accept"
+                className="form__input-checkbox"
+              ></input>
+              <div className="form__input form__input_type_checkbox"></div>
+            </label>
+
             <p className="form__accept-title">
               Принимаю{' '}
               <button type="button" className="form__accept-link">
