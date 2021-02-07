@@ -1,5 +1,5 @@
 .root {
-  background-color: #fff;
+  background-color: grey;
   font-style: normal;
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
@@ -20,10 +20,10 @@
 
 .root__container {
   width: 100%;
-  height: 100vh;
   max-width: 1440px;
   min-width: 360px;
   margin: 0 auto;
-  padding: 0;
+  padding: 50px 0;
+  box-sizing: border-box;
   position: relative;
 }
