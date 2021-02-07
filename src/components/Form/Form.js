@@ -1,13 +1,36 @@
 import { forAppForm as config } from '../../configs/configForComponents';
+import { useState, useCallback } from 'react';
 
 import './Form.css';
 
 function Form() {
   const { FORM_TITLE, REDIRECT_TITLE, REDIRECT_BUTTON_TEXT } = config;
+  const [isOnFocus, setIsOnFocus] = useState(false);
+  const [isMouseEntered, setIsMouseEntered] = useState({});
 
   const handleSubmit = (evt) => {
     evt.preventDefault();
   };
+
+  const handleFocus = useCallback(() => {
+    setIsOnFocus(!isOnFocus);
+  }, [isOnFocus]);
+
+  const handleMouseEnter = useCallback(
+    (evt) => {
+      const { id } = evt.target;
+      setIsMouseEntered({ ...isMouseEntered, [id]: true });
+    },
+    [isMouseEntered],
+  );
+
+  const handleMouseLeave = useCallback(
+    (evt) => {
+      const { id } = evt.target;
+      setIsMouseEntered({ ...isMouseEntered, [id]: false });
+    },
+    [isMouseEntered],
+  );
 
   return (
     <form className="form app__form">
@@ -54,23 +77,79 @@ function Form() {
             ></input>
             <span className="form__input-error">Validation error message</span>
           </div>
+
           <div className="form__field form__field_type_default">
-            <label className="form__input-label">Язык</label>
-            <select
-              id="language-select"
-              name="language-select"
-              value="Язык"
-              className="form__input form__input_type_default form__input_type_select "
-            >
-              <option value="Язык">Язык</option>
-              <option value="ru">Русский</option>
-              <option value="en">Английский</option>
-              <option value="ch">Китайский</option>
-              <option value="esp">Испанский</option>
-            </select>
+            <span className="form__input-label">Язык</span>
+            <label>
+              <input
+                id="select"
+                type="text"
+                value={isOnFocus ? 'Язык' : ''}
+                placeholder="Язык"
+                onFocus={handleFocus}
+                onBlur={handleFocus}
+                className="form__input form__input_type_default form__input_type_select "
+              ></input>
+            </label>
+            <ul className="form__select-input-options">
+              <li>
+                <option
+                  id="ru"
+                  value="ru"
+                  onMouseMove={handleMouseEnter}
+                  onMouseOut={handleMouseLeave}
+                  className={`form__select-input-option ${
+                    isMouseEntered['ru'] ? 'form__select-input-option_mouseentered' : ''
+                  }`}
+                >
+                  Русский
+                </option>
+              </li>
+              <li>
+                <option
+                  id="en"
+                  value="en"
+                  onMouseMove={handleMouseEnter}
+                  onMouseOut={handleMouseLeave}
+                  className={`form__select-input-option ${
+                    isMouseEntered['en'] ? 'form__select-input-option_mouseentered' : ''
+                  }`}
+                >
+                  Английский
+                </option>
+              </li>
+              <li>
+                <option
+                  id="ch"
+                  value="ch"
+                  onMouseMove={handleMouseEnter}
+                  onMouseOut={handleMouseLeave}
+                  className={`form__select-input-option ${
+                    isMouseEntered['ch'] ? 'form__select-input-option_mouseentered' : ''
+                  }`}
+                >
+                  Китайский
+                </option>
+              </li>
+              <li>
+                <option
+                  id="esp"
+                  value="esp"
+                  onMouseMove={handleMouseEnter}
+                  onMouseOut={handleMouseLeave}
+                  onM
+                  className={`form__select-input-option ${
+                    isMouseEntered['esp'] ? 'form__select-input-option_mouseentered' : ''
+                  }`}
+                >
+                  Испанский
+                </option>
+              </li>
+            </ul>
           </div>
+
           <div className="form__field form__field_type_checkbox">
-            <label for="accept" className="checkbox-label">
+            <label>
               <input
                 type="checkbox"
                 id="accept"
