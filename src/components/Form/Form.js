@@ -3,30 +3,47 @@ import { useState, useCallback } from 'react';
 
 import './Form.css';
 
-function Form() {
-  const { FORM_TITLE, REDIRECT_TITLE, REDIRECT_BUTTON_TEXT } = config;
-  const [isOnFocus, setIsOnFocus] = useState(false);
+function Form({ handleSubmit }) {
+  const {
+    FORM_TITLE,
+    REDIRECT_TITLE,
+    REDIRECT_BUTTON_TEXT,
+    NAME_INPUT_LABEL,
+    NAME_INPUT_PLACEHOLDER,
+    EMAIL_INPUT_LABEL,
+    EMAIL_INPUT_PLACEHOLDER,
+    TEL_INPUT_LABEL,
+    TEL_INPUT_PLACEHOLDER,
+    LANGUAGE_INPUT_LABEL,
+    LANGUAGE_INPUT_PLACEHOLDER,
+    OPTIONS_LIST,
+  } = config;
+
   const [isMouseEntered, setIsMouseEntered] = useState({});
-  const [selectValue, setSelectValue] = useState('');
-  const [isSelectOpen, setIsSelectOpen] = useState(false);
+  const [selectedValue, setSelectedValue] = useState('');
+  const [isSelectMenuOpen, setIsSelectMenuOpen] = useState(false);
+  const [isSelectMenuHidden, setIsSelectMenuHidden] = useState(true);
 
-  const handleSubmit = (evt) => {
-    evt.preventDefault();
-  };
-
-  const handleClickOnAnyPlace = useCallback((evt) => {
-    console.log(evt.target);
-    if (!evt.target.id || evt.target.id !== 'select') {
-      setIsSelectOpen(false);
-      document.removeEventListener('click', handleClickOnAnyPlace);
-    }
+  const closeSelectMenu = useCallback((callback) => {
+    setIsSelectMenuOpen(false);
+    document.removeEventListener('click', callback);
+    setTimeout(() => setIsSelectMenuHidden(true), 300);
   }, []);
 
-  const handleFocus = useCallback(() => {
-    setIsOnFocus(!isOnFocus);
-    setIsSelectOpen(true);
-    document.addEventListener('click', handleClickOnAnyPlace);
-  }, [isOnFocus, handleClickOnAnyPlace]);
+  const handleClickAroundForm = useCallback(
+    (evt) => {
+      if (evt.target.id === 'page') {
+        closeSelectMenu(handleClickAroundForm);
+      }
+    },
+    [closeSelectMenu],
+  );
+
+  const openSelectMenu = useCallback(() => {
+    setIsSelectMenuOpen(true);
+    setTimeout(() => setIsSelectMenuHidden(false), 80);
+    document.addEventListener('click', handleClickAroundForm);
+  }, [handleClickAroundForm]);
 
   const handleMouseEnter = useCallback(
     (evt) => {
@@ -46,16 +63,24 @@ function Form() {
 
   const handleOptionClick = useCallback(
     (evt) => {
-      const { id } = evt.target;
-      setIsSelectOpen(false);
-      setSelectValue(id);
-      document.removeEventListener('click', handleClickOnAnyPlace);
+      const { text } = evt.target;
+      setSelectedValue(text);
+      closeSelectMenu(handleClickAroundForm);
     },
-    [handleClickOnAnyPlace],
+    [closeSelectMenu, handleClickAroundForm],
+  );
+
+  const handleSubmitForm = useCallback(
+    (evt) => {
+      evt.preventDefault();
+      const submitData = { language: selectedValue };
+      handleSubmit(submitData);
+    },
+    [handleSubmit, selectedValue],
   );
 
   return (
-    <form className="form app__form">
+    <form onSubmit={handleSubmitForm} className="form app__form">
       <div className="form__container">
         <h2 className="form__title">{FORM_TITLE}</h2>
         <div className="form__description">
@@ -67,63 +92,84 @@ function Form() {
         <div className="form__link form__link_hidden">Здесь какая-то пустая ссылка из макета</div>
         <div className="form__inputs">
           <div className="form__field form__field_type_default">
-            <label className="form__input-label">Имя</label>
+            <label className="form__input-label">{NAME_INPUT_LABEL}</label>
             <input
               type="text"
               id="name"
               name="name"
-              placeholder="Введите Ваше имя"
+              placeholder={NAME_INPUT_PLACEHOLDER}
               className="form__input form__input_type_default"
             ></input>
             <span className="form__input-error">Validation error message</span>
           </div>
           <div className="form__field form__field_type_default">
-            <label className="form__input-label">Email</label>
+            <label className="form__input-label">{EMAIL_INPUT_LABEL}</label>
             <input
               type="email"
               id="email"
               name="email"
-              placeholder="Введите Ваш email"
+              placeholder={EMAIL_INPUT_PLACEHOLDER}
               className="form__input form__input_type_default"
             ></input>
             <span className="form__input-error">Validation error message</span>
           </div>
           <div className="form__field form__field_type_default">
-            <label className="form__input-label">Номер телефона</label>
+            <label className="form__input-label">{TEL_INPUT_LABEL}</label>
             <input
               type="tel"
               id="phone"
               name="phone"
-              placeholder="Введите номер телефона"
+              placeholder={TEL_INPUT_PLACEHOLDER}
               className="form__input form__input_type_default"
             ></input>
             <span className="form__input-error">Validation error message</span>
           </div>
 
           <div className="form__field form__field_type_default form__field_type_select">
-            <span className="form__input-label">Язык</span>
+            <span className="form__input-label">{LANGUAGE_INPUT_LABEL}</span>
             <label>
               <input
                 id="select"
                 type="text"
-                value={selectValue || ''}
-                placeholder="Язык"
-                onFocus={handleFocus}
-                onBlur={handleFocus}
+                value={selectedValue || ''}
+                placeholder={LANGUAGE_INPUT_PLACEHOLDER}
+                onClick={!isSelectMenuOpen ? openSelectMenu : closeSelectMenu}
                 className="form__input form__input_type_default"
                 readOnly
               ></input>
+              <div className="form__select-input-button"></div>
             </label>
             <ul
               className={`form__select-input-options ${
-                isSelectOpen
-                  ? 'form__select-input-options_opened'
+                isSelectMenuOpen
+                  ? !isSelectMenuHidden
+                    ? 'form__select-input-options_appearing'
+                    : ''
+                  : !isSelectMenuHidden
+                  ? 'form__select-input-options_disappearing'
                   : 'form__select-input-options_hidden'
               }`}
             >
+              {OPTIONS_LIST.map((option) => (
+                <li key={option.value}>
+                  <option
+                    id={option.value}
+                    value={option.value}
+                    onMouseMove={handleMouseEnter}
+                    onMouseOut={handleMouseLeave}
+                    onClick={handleOptionClick}
+                    className={`form__select-input-option ${
+                      isMouseEntered['Русский'] ? 'form__select-input-option_mouseentered' : ''
+                    }`}
+                  >
+                    {option.text}
+                  </option>
+                </li>
+              ))}
+              {/*
               <li>
                 <option
-                  id="Русский"
+                  id="ru"
                   value="ru"
                   onMouseMove={handleMouseEnter}
                   onMouseOut={handleMouseLeave}
@@ -137,7 +183,7 @@ function Form() {
               </li>
               <li>
                 <option
-                  id="Английский"
+                  id="en"
                   value="en"
                   onMouseMove={handleMouseEnter}
                   onMouseOut={handleMouseLeave}
@@ -151,7 +197,7 @@ function Form() {
               </li>
               <li>
                 <option
-                  id="Китайский"
+                  id="ch"
                   value="ch"
                   onMouseMove={handleMouseEnter}
                   onMouseOut={handleMouseLeave}
@@ -165,7 +211,7 @@ function Form() {
               </li>
               <li>
                 <option
-                  id="Испанский"
+                  id="esp"
                   value="esp"
                   onMouseMove={handleMouseEnter}
                   onMouseOut={handleMouseLeave}
@@ -176,7 +222,7 @@ function Form() {
                 >
                   Испанский
                 </option>
-              </li>
+                </li>*/}
             </ul>
           </div>
 

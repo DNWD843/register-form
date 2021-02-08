@@ -133,14 +133,20 @@
 .form__field_type_select {
   position: relative;
   margin: 0 0 26px;
+  z-index: 10;
 }
 
-/*.form__input_type_select {
-  margin: 0 0 4px;
-}*/
+.form__select-input-button {
+  width: 30px;
+  height: 30px;
+  background-image: url('../../images/dropdown-icon.png');
 
-.form__input_type_select:focus {
-  caret-color: transparent;
+  margin: 0;
+  padding: 0;
+
+  position: absolute;
+  right: 11px;
+  top: 37px;
 }
 
 .form__select-input-options {
@@ -165,10 +171,18 @@
   top: 82px;
   left: 0;
   right: 0;
+  z-index: 5;
+
+  opacity: 0;
+  transition: opacity linear 0.2s;
 }
 
-.form__select-input-options_opened {
-  display: block;
+.form__select-input-options_appearing {
+  opacity: 1;
+}
+
+.form__select-input-options_disappearing {
+  opacity: 0;
 }
 
 .form__select-input-options_hidden {
@@ -202,7 +216,7 @@
 .form__input-checkbox:checked + .form__input_type_checkbox {
   width: 24px;
   height: 24px;
-  background-image: url('../../images/icon.svg');
+  background-image: url('../../images/checkbox-icon.svg');
   background-size: cover;
   border: 2px solid #0880ae;
 }
