@@ -130,9 +130,14 @@
 /***********************************************************************/
 /** Стилизуем выпадающий список  ****************/
 
-.form__input_type_select {
-  margin: 0 0 4px;
+.form__field_type_select {
+  position: relative;
+  margin: 0 0 26px;
 }
+
+/*.form__input_type_select {
+  margin: 0 0 4px;
+}*/
 
 .form__input_type_select:focus {
   caret-color: transparent;
@@ -155,12 +160,24 @@
   border: 1px solid #dbe2ea;
   box-shadow: 0px 4px 8px rgba(44, 39, 56, 0.04), 0px 20px 20px rgba(44, 39, 56, 0.04);
   border-radius: 6px;
+
+  position: absolute;
+  top: 82px;
+  left: 0;
+  right: 0;
+}
+
+.form__select-input-options_opened {
+  display: block;
+}
+
+.form__select-input-options_hidden {
+  display: none;
 }
 
 .form__select-input-option {
   padding: 12px 15px;
   box-sizing: border-box;
-  border: 1px solid green;
 }
 
 .form__select-input-option_mouseentered {

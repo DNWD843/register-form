@@ -7,14 +7,26 @@ function Form() {
   const { FORM_TITLE, REDIRECT_TITLE, REDIRECT_BUTTON_TEXT } = config;
   const [isOnFocus, setIsOnFocus] = useState(false);
   const [isMouseEntered, setIsMouseEntered] = useState({});
+  const [selectValue, setSelectValue] = useState('');
+  const [isSelectOpen, setIsSelectOpen] = useState(false);
 
   const handleSubmit = (evt) => {
     evt.preventDefault();
   };
 
+  const handleClickOnAnyPlace = useCallback((evt) => {
+    console.log(evt.target);
+    if (!evt.target.id || evt.target.id !== 'select') {
+      setIsSelectOpen(false);
+      document.removeEventListener('click', handleClickOnAnyPlace);
+    }
+  }, []);
+
   const handleFocus = useCallback(() => {
     setIsOnFocus(!isOnFocus);
-  }, [isOnFocus]);
+    setIsSelectOpen(true);
+    document.addEventListener('click', handleClickOnAnyPlace);
+  }, [isOnFocus, handleClickOnAnyPlace]);
 
   const handleMouseEnter = useCallback(
     (evt) => {
@@ -30,6 +42,16 @@ function Form() {
       setIsMouseEntered({ ...isMouseEntered, [id]: false });
     },
     [isMouseEntered],
+  );
+
+  const handleOptionClick = useCallback(
+    (evt) => {
+      const { id } = evt.target;
+      setIsSelectOpen(false);
+      setSelectValue(id);
+      document.removeEventListener('click', handleClickOnAnyPlace);
+    },
+    [handleClickOnAnyPlace],
   );
 
   return (
@@ -78,28 +100,36 @@ function Form() {
             <span className="form__input-error">Validation error message</span>
           </div>
 
-          <div className="form__field form__field_type_default">
+          <div className="form__field form__field_type_default form__field_type_select">
             <span className="form__input-label">Язык</span>
             <label>
               <input
                 id="select"
                 type="text"
-                value={isOnFocus ? 'Язык' : ''}
+                value={selectValue || ''}
                 placeholder="Язык"
                 onFocus={handleFocus}
                 onBlur={handleFocus}
-                className="form__input form__input_type_default form__input_type_select "
+                className="form__input form__input_type_default"
+                readOnly
               ></input>
             </label>
-            <ul className="form__select-input-options">
+            <ul
+              className={`form__select-input-options ${
+                isSelectOpen
+                  ? 'form__select-input-options_opened'
+                  : 'form__select-input-options_hidden'
+              }`}
+            >
               <li>
                 <option
-                  id="ru"
+                  id="Русский"
                   value="ru"
                   onMouseMove={handleMouseEnter}
                   onMouseOut={handleMouseLeave}
+                  onClick={handleOptionClick}
                   className={`form__select-input-option ${
-                    isMouseEntered['ru'] ? 'form__select-input-option_mouseentered' : ''
+                    isMouseEntered['Русский'] ? 'form__select-input-option_mouseentered' : ''
                   }`}
                 >
                   Русский
@@ -107,12 +137,13 @@ function Form() {
               </li>
               <li>
                 <option
-                  id="en"
+                  id="Английский"
                   value="en"
                   onMouseMove={handleMouseEnter}
                   onMouseOut={handleMouseLeave}
+                  onClick={handleOptionClick}
                   className={`form__select-input-option ${
-                    isMouseEntered['en'] ? 'form__select-input-option_mouseentered' : ''
+                    isMouseEntered['Английский'] ? 'form__select-input-option_mouseentered' : ''
                   }`}
                 >
                   Английский
@@ -120,12 +151,13 @@ function Form() {
               </li>
               <li>
                 <option
-                  id="ch"
+                  id="Китайский"
                   value="ch"
                   onMouseMove={handleMouseEnter}
                   onMouseOut={handleMouseLeave}
+                  onClick={handleOptionClick}
                   className={`form__select-input-option ${
-                    isMouseEntered['ch'] ? 'form__select-input-option_mouseentered' : ''
+                    isMouseEntered['Китайский'] ? 'form__select-input-option_mouseentered' : ''
                   }`}
                 >
                   Китайский
@@ -133,13 +165,13 @@ function Form() {
               </li>
               <li>
                 <option
-                  id="esp"
+                  id="Испанский"
                   value="esp"
                   onMouseMove={handleMouseEnter}
                   onMouseOut={handleMouseLeave}
-                  onM
+                  onClick={handleOptionClick}
                   className={`form__select-input-option ${
-                    isMouseEntered['esp'] ? 'form__select-input-option_mouseentered' : ''
+                    isMouseEntered['Испанский'] ? 'form__select-input-option_mouseentered' : ''
                   }`}
                 >
                   Испанский
