@@ -41,7 +41,7 @@ function Form({ handleSubmit }) {
 
   const openSelectMenu = useCallback(() => {
     setIsSelectMenuOpen(true);
-    setTimeout(() => setIsSelectMenuHidden(false), 80);
+    setTimeout(() => setIsSelectMenuHidden(false), 50);
     document.addEventListener('click', handleClickAroundForm);
   }, [handleClickAroundForm]);
 
@@ -134,6 +134,8 @@ function Form({ handleSubmit }) {
                 value={selectedValue || ''}
                 placeholder={LANGUAGE_INPUT_PLACEHOLDER}
                 onClick={!isSelectMenuOpen ? openSelectMenu : closeSelectMenu}
+                onFocus={() => !selectedValue && setSelectedValue(LANGUAGE_INPUT_PLACEHOLDER)}
+                onBlur={() => selectedValue === LANGUAGE_INPUT_PLACEHOLDER && setSelectedValue('')}
                 className="form__input form__input_type_default"
                 readOnly
               ></input>
