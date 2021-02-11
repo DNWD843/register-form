@@ -1,6 +1,8 @@
 import { forAppForm as config } from '../../configs/configForComponents';
 import { useState, useCallback, useEffect } from 'react';
 import { useHookWithValidation } from '../../hooks/useFormWithValidation';
+import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import './Form.css';
 
 function Form({ handleSubmit }) {
@@ -17,6 +19,10 @@ function Form({ handleSubmit }) {
     LANGUAGE_INPUT_LABEL,
     LANGUAGE_INPUT_PLACEHOLDER,
     OPTIONS_LIST,
+    ACCEPT_TITLE_BEGIN,
+    ACCEPT_TITLE_END,
+    ACCEPT_LINK_TEXT,
+    SUBMIT_BUTTON_TEXT,
   } = config;
 
   const { values, handleInputChange, errors, isFormValid, resetForm } = useHookWithValidation();
@@ -28,26 +34,38 @@ function Form({ handleSubmit }) {
   const [isSelectMenuHidden, setIsSelectMenuHidden] = useState(true);
   const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
 
-  const closeSelectMenu = useCallback((callback) => {
+  const selectInputClassName = classNames('form__select-input-options', {
+    'form__select-input-options_appearing': isSelectMenuOpen && !isSelectMenuHidden,
+    'form__select-input-options_disappearing': !isSelectMenuOpen && !isSelectMenuHidden,
+    'form__select-input-options_hidden': !isSelectMenuOpen && isSelectMenuHidden,
+  });
+
+  const nameErrorClassName = classNames('form__input-error', {
+    'form__input-error_hidden': !errors.name,
+  });
+
+  const emailErrorClassName = classNames('form__input-error', {
+    'form__input-error_hidden': !errors.email,
+  });
+
+  const phoneErrorClassName = classNames('form__input-error', {
+    'form__input-error_hidden': !errors.phone,
+  });
+
+  const submitButtonClassName = classNames('form__submit-button', {
+    'form__submit-button_enabled': isFormValid && selectedValue && isCheckboxChecked,
+    'form__submit-button_disabled': !(isFormValid && selectedValue && isCheckboxChecked),
+  });
+
+  const closeSelectMenu = useCallback(() => {
     setIsSelectMenuOpen(false);
-    document.removeEventListener('click', callback);
     setTimeout(() => setIsSelectMenuHidden(true), 300);
   }, []);
-
-  const handleClickAroundForm = useCallback(
-    (evt) => {
-      if (evt.target.id === 'page') {
-        closeSelectMenu(handleClickAroundForm);
-      }
-    },
-    [closeSelectMenu],
-  );
 
   const openSelectMenu = useCallback(() => {
     setIsSelectMenuOpen(true);
     setTimeout(() => setIsSelectMenuHidden(false), 50);
-    document.addEventListener('click', handleClickAroundForm);
-  }, [handleClickAroundForm]);
+  }, []);
 
   const handleMouseEnter = useCallback(
     (evt) => {
@@ -69,9 +87,9 @@ function Form({ handleSubmit }) {
     (evt) => {
       const { text } = evt.target;
       setSelectedValue(text);
-      closeSelectMenu(handleClickAroundForm);
+      closeSelectMenu();
     },
-    [closeSelectMenu, handleClickAroundForm],
+    [closeSelectMenu],
   );
 
   const handleClickAccept = useCallback(
@@ -80,6 +98,12 @@ function Form({ handleSubmit }) {
     },
     [isCheckboxChecked],
   );
+
+  const clearFormInputs = useCallback(() => {
+    resetForm();
+    setSelectedValue('');
+    setIsCheckboxChecked(false);
+  }, [resetForm]);
 
   const handleSubmitForm = useCallback(
     (evt) => {
@@ -92,25 +116,14 @@ function Form({ handleSubmit }) {
         accepted: isCheckboxChecked,
       };
       handleSubmit(submitData);
-      resetForm();
-      setSelectedValue('');
-      setIsCheckboxChecked(false);
+      clearFormInputs();
     },
-    [
-      handleSubmit,
-      name,
-      email,
-      phone,
-      selectedValue,
-      isCheckboxChecked,
-      resetForm,
-      setSelectedValue,
-    ],
+    [handleSubmit, name, email, phone, selectedValue, isCheckboxChecked, clearFormInputs],
   );
 
   useEffect(() => {
-    resetForm();
-  }, [resetForm]);
+    clearFormInputs();
+  }, [clearFormInputs]);
 
   return (
     <form onSubmit={handleSubmitForm} className="form app__form">
@@ -134,12 +147,10 @@ function Form({ handleSubmit }) {
               onChange={handleInputChange}
               placeholder={NAME_INPUT_PLACEHOLDER}
               className="form__input form__input_type_default"
-              pattern="[a-zA-Zа-яА-Я\-\s]*"
+              pattern="[a-zA-Zа-яА-Я-s]*"
               required
             ></input>
-            <span className={`form__input-error ${!errors.name && 'form__input-error_hidden'}`}>
-              {errors.name || '1'}
-            </span>
+            <span className={nameErrorClassName}>{errors.name || '1'}</span>
           </div>
           <div className="form__field form__field_type_default">
             <label className="form__input-label">{EMAIL_INPUT_LABEL}</label>
@@ -153,9 +164,7 @@ function Form({ handleSubmit }) {
               className="form__input form__input_type_default"
               required
             ></input>
-            <span className={`form__input-error ${!errors.email && 'form__input-error_hidden'}`}>
-              {errors.email || '3'}
-            </span>
+            <span className={emailErrorClassName}>{errors.email || '3'}</span>
           </div>
           <div className="form__field form__field_type_default">
             <label className="form__input-label">{TEL_INPUT_LABEL}</label>
@@ -167,12 +176,10 @@ function Form({ handleSubmit }) {
               onChange={handleInputChange}
               placeholder={TEL_INPUT_PLACEHOLDER}
               className="form__input form__input_type_default"
-              pattern="[+]?[0-9][\-]?[\(]?\d{3,4}[\)]?[\-]?[\d]{1,3}[\-]?[\d]{2}[\-]?[\d]{2}"
+              pattern="[+]?[0-9][\-]?[\(]?\d{3}[\)]?[\-]?\d{3}[\-]?\d{2}[\-]?\d{2}"
               required
             ></input>
-            <span className={`form__input-error ${!errors.phone && 'form__input-error_hidden'}`}>
-              {errors.phone || '2'}
-            </span>
+            <span className={phoneErrorClassName}>{errors.phone || '2'}</span>
           </div>
 
           <div className="form__field form__field_type_default form__field_type_select">
@@ -185,23 +192,16 @@ function Form({ handleSubmit }) {
                 placeholder={LANGUAGE_INPUT_PLACEHOLDER}
                 onClick={!isSelectMenuOpen ? openSelectMenu : closeSelectMenu}
                 onFocus={() => !selectedValue && setSelectedValue(LANGUAGE_INPUT_PLACEHOLDER)}
-                onBlur={() => selectedValue === LANGUAGE_INPUT_PLACEHOLDER && setSelectedValue('')}
+                onBlur={() => {
+                  selectedValue === LANGUAGE_INPUT_PLACEHOLDER && setSelectedValue('');
+                  closeSelectMenu();
+                }}
                 className="form__input form__input_type_default"
                 readOnly
               ></input>
               <div className="form__select-input-button"></div>
             </label>
-            <ul
-              className={`form__select-input-options ${
-                isSelectMenuOpen
-                  ? !isSelectMenuHidden
-                    ? 'form__select-input-options_appearing'
-                    : ''
-                  : !isSelectMenuHidden
-                  ? 'form__select-input-options_disappearing'
-                  : 'form__select-input-options_hidden'
-              }`}
-            >
+            <ul className={selectInputClassName}>
               {OPTIONS_LIST.map((option) => (
                 <li key={option.value}>
                   <option
@@ -211,7 +211,7 @@ function Form({ handleSubmit }) {
                     onMouseOut={handleMouseLeave}
                     onClick={handleOptionClick}
                     className={`form__select-input-option ${
-                      isMouseEntered['Русский'] ? 'form__select-input-option_mouseentered' : ''
+                      isMouseEntered[option.value] ? 'form__select-input-option_mouseentered' : ''
                     }`}
                   >
                     {option.text}
@@ -233,28 +233,28 @@ function Form({ handleSubmit }) {
             ></button>
 
             <p className="form__accept-title">
-              Принимаю{' '}
+              {ACCEPT_TITLE_BEGIN}
               <button type="button" className="form__accept-link">
-                условия
-              </button>{' '}
-              использования
+                {ACCEPT_LINK_TEXT}
+              </button>
+              {ACCEPT_TITLE_END}
             </p>
           </div>
         </div>
         <button
           type="submit"
-          disabled={!isFormValid && !selectedValue && isCheckboxChecked}
-          className={`form__submit-button ${
-            isFormValid && selectedValue && isCheckboxChecked
-              ? 'form__submit-button_enabled'
-              : 'form__submit-button_disabled'
-          }`}
+          disabled={!isFormValid || !selectedValue || !isCheckboxChecked}
+          className={submitButtonClassName}
         >
-          Зарегистрироваться
+          {SUBMIT_BUTTON_TEXT}
         </button>
       </div>
     </form>
   );
 }
+
+Form.propTypes = {
+  handleSubmit: PropTypes.func.isRequired,
+};
 
 export { Form };

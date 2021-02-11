@@ -16,4 +16,8 @@ export const forAppForm = {
     { value: 'ch', text: 'Китайский' },
     { value: 'esp', text: 'Испанский' },
   ],
+  ACCEPT_TITLE_BEGIN: 'Принимаю ',
+  ACCEPT_TITLE_END: ' использования',
+  ACCEPT_LINK_TEXT: 'условия',
+  SUBMIT_BUTTON_TEXT: 'Зарегистрироваться',
 };
