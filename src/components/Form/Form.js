@@ -134,6 +134,7 @@ function Form({ handleSubmit }) {
               onChange={handleInputChange}
               placeholder={NAME_INPUT_PLACEHOLDER}
               className="form__input form__input_type_default"
+              pattern="[a-zA-Zа-яА-Я\-\s]*"
               required
             ></input>
             <span className={`form__input-error ${!errors.name && 'form__input-error_hidden'}`}>
@@ -166,6 +167,7 @@ function Form({ handleSubmit }) {
               onChange={handleInputChange}
               placeholder={TEL_INPUT_PLACEHOLDER}
               className="form__input form__input_type_default"
+              pattern="[+]?[0-9][\-]?[\(]?\d{3,4}[\)]?[\-]?[\d]{1,3}[\-]?[\d]{2}[\-]?[\d]{2}"
               required
             ></input>
             <span className={`form__input-error ${!errors.phone && 'form__input-error_hidden'}`}>
