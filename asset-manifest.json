@@ -14,9 +14,9 @@
     "static/media/Form.css": "/register-form/static/media/checkbox-icon.67e2cbe5.svg"
   },
   "entrypoints": [
-    "register-form/static/js/runtime-main.dd0bca9e.js",
-    "register-form/static/js/2.5d495a39.chunk.js",
-    "register-form/static/css/main.9aea3330.chunk.css",
-    "register-form/static/js/main.c086644e.chunk.js"
+    "static/js/runtime-main.dd0bca9e.js",
+    "static/js/2.5d495a39.chunk.js",
+    "static/css/main.9aea3330.chunk.css",
+    "static/js/main.c086644e.chunk.js"
   ]
 }
