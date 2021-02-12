@@ -77,6 +77,23 @@ function Form({ handleSubmit }) {
   }, []);
 
   /**
+   * @method handleClickOnOverlay
+   * @description Обработчик клика по оверлею<br>
+   * Закрывает выпадающий список при клике по оверлею
+   * @param {Event} evt - событие
+   * @public
+   * @since v.1.0.0
+   */
+  const handleClickOnOverlay = useCallback(
+    (evt) => {
+      if (evt.target === evt.currentTarget) {
+        closeSelectMenu();
+      }
+    },
+    [closeSelectMenu],
+  );
+
+  /**
    * @method openSelectMenu
    * @description Метод, открывающий выпадающий список
    * @since v.1.0.0
@@ -189,132 +206,134 @@ function Form({ handleSubmit }) {
   }, [clearFormInputs]);
 
   return (
-    <form onSubmit={handleSubmitForm} className="form app__form">
-      <div className="form__container">
-        <h2 className="form__title">{FORM_TITLE}</h2>
-        <div className="form__description">
-          <p className="form__redirect-title">{REDIRECT_TITLE}</p>
-          <button type="button" className="form__redirect-button">
-            {REDIRECT_BUTTON_TEXT}
+    <div onClick={handleClickOnOverlay} className="overlay page__overlay">
+      <form onSubmit={handleSubmitForm} className="form app__form">
+        <div className="form__container">
+          <h2 className="form__title">{FORM_TITLE}</h2>
+          <div className="form__description">
+            <p className="form__redirect-title">{REDIRECT_TITLE}</p>
+            <button type="button" className="form__redirect-button">
+              {REDIRECT_BUTTON_TEXT}
+            </button>
+          </div>
+          <div className="form__link form__link_hidden">Здесь какая-то пустая ссылка из макета</div>
+          <div className="form__inputs">
+            <div className="form__field form__field_type_default">
+              <label className="form__input-label">{NAME_INPUT_LABEL}</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                value={name || ''}
+                onChange={handleInputChange}
+                placeholder={NAME_INPUT_PLACEHOLDER}
+                className="form__input form__input_type_default"
+                pattern="[a-zA-Zа-яА-Я-s]*"
+                required
+              ></input>
+              <span className={nameErrorClassName}>{errors.name || '1'}</span>
+            </div>
+            <div className="form__field form__field_type_default">
+              <label className="form__input-label">{EMAIL_INPUT_LABEL}</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={email || ''}
+                onChange={handleInputChange}
+                placeholder={EMAIL_INPUT_PLACEHOLDER}
+                className="form__input form__input_type_default"
+                required
+              ></input>
+              <span className={emailErrorClassName}>{errors.email || '3'}</span>
+            </div>
+            <div className="form__field form__field_type_default">
+              <label className="form__input-label">{TEL_INPUT_LABEL}</label>
+              <input
+                type="tel"
+                id="phone"
+                name="phone"
+                value={phone || ''}
+                onChange={handleInputChange}
+                placeholder={TEL_INPUT_PLACEHOLDER}
+                className="form__input form__input_type_default"
+                pattern="[+]?[0-9][\-]?[\(]?\d{3}[\)]?[\-]?\d{3}[\-]?\d{2}[\-]?\d{2}"
+                required
+              ></input>
+              <span className={phoneErrorClassName}>{errors.phone || '2'}</span>
+            </div>
+
+            <div className="form__field form__field_type_default form__field_type_select">
+              <span className="form__input-label">{LANGUAGE_INPUT_LABEL}</span>
+              <label>
+                <input
+                  id="select"
+                  type="text"
+                  value={selectedValue || ''}
+                  placeholder={LANGUAGE_INPUT_PLACEHOLDER}
+                  onFocus={() => !selectedValue && setSelectedValue(LANGUAGE_INPUT_PLACEHOLDER)}
+                  onBlur={() => {
+                    selectedValue === LANGUAGE_INPUT_PLACEHOLDER && setSelectedValue('');
+                    /*closeSelectMenu();*/
+                  }}
+                  className="form__input form__input_type_default"
+                  readOnly
+                ></input>
+                <div
+                  onClick={!isSelectMenuOpen ? openSelectMenu : closeSelectMenu}
+                  className="form__select-input-button"
+                ></div>
+              </label>
+              <ul className={selectInputClassName}>
+                {OPTIONS_LIST.map((option) => (
+                  <li key={option.value}>
+                    <option
+                      id={option.value}
+                      value={option.value}
+                      onMouseMove={handleMouseEnter}
+                      onMouseOut={handleMouseLeave}
+                      onClick={handleOptionClick}
+                      className={`form__select-input-option ${
+                        isMouseEntered[option.value] ? 'form__select-input-option_mouseentered' : ''
+                      }`}
+                    >
+                      {option.text}
+                    </option>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="form__field form__field_type_checkbox">
+              <button
+                type="button"
+                id="accept"
+                name="accept"
+                onClick={handleClickAccept}
+                className={`form__accept-checkbox ${
+                  isCheckboxChecked && 'form__accept-checkbox_checked'
+                }`}
+              ></button>
+
+              <p className="form__accept-title">
+                {ACCEPT_TITLE_BEGIN}
+                <button type="button" className="form__accept-link">
+                  {ACCEPT_LINK_TEXT}
+                </button>
+                {ACCEPT_TITLE_END}
+              </p>
+            </div>
+          </div>
+          <button
+            type="submit"
+            disabled={!isFormValid || !selectedValue || !isCheckboxChecked}
+            className={submitButtonClassName}
+          >
+            {SUBMIT_BUTTON_TEXT}
           </button>
         </div>
-        <div className="form__link form__link_hidden">Здесь какая-то пустая ссылка из макета</div>
-        <div className="form__inputs">
-          <div className="form__field form__field_type_default">
-            <label className="form__input-label">{NAME_INPUT_LABEL}</label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              value={name || ''}
-              onChange={handleInputChange}
-              placeholder={NAME_INPUT_PLACEHOLDER}
-              className="form__input form__input_type_default"
-              pattern="[a-zA-Zа-яА-Я-s]*"
-              required
-            ></input>
-            <span className={nameErrorClassName}>{errors.name || '1'}</span>
-          </div>
-          <div className="form__field form__field_type_default">
-            <label className="form__input-label">{EMAIL_INPUT_LABEL}</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={email || ''}
-              onChange={handleInputChange}
-              placeholder={EMAIL_INPUT_PLACEHOLDER}
-              className="form__input form__input_type_default"
-              required
-            ></input>
-            <span className={emailErrorClassName}>{errors.email || '3'}</span>
-          </div>
-          <div className="form__field form__field_type_default">
-            <label className="form__input-label">{TEL_INPUT_LABEL}</label>
-            <input
-              type="tel"
-              id="phone"
-              name="phone"
-              value={phone || ''}
-              onChange={handleInputChange}
-              placeholder={TEL_INPUT_PLACEHOLDER}
-              className="form__input form__input_type_default"
-              pattern="[+]?[0-9][\-]?[\(]?\d{3}[\)]?[\-]?\d{3}[\-]?\d{2}[\-]?\d{2}"
-              required
-            ></input>
-            <span className={phoneErrorClassName}>{errors.phone || '2'}</span>
-          </div>
-
-          <div className="form__field form__field_type_default form__field_type_select">
-            <span className="form__input-label">{LANGUAGE_INPUT_LABEL}</span>
-            <label>
-              <input
-                id="select"
-                type="text"
-                value={selectedValue || ''}
-                placeholder={LANGUAGE_INPUT_PLACEHOLDER}
-                onFocus={() => !selectedValue && setSelectedValue(LANGUAGE_INPUT_PLACEHOLDER)}
-                onBlur={() => {
-                  selectedValue === LANGUAGE_INPUT_PLACEHOLDER && setSelectedValue('');
-                  /*closeSelectMenu();*/
-                }}
-                className="form__input form__input_type_default"
-                readOnly
-              ></input>
-              <div
-                onClick={!isSelectMenuOpen ? openSelectMenu : closeSelectMenu}
-                className="form__select-input-button"
-              ></div>
-            </label>
-            <ul className={selectInputClassName}>
-              {OPTIONS_LIST.map((option) => (
-                <li key={option.value}>
-                  <option
-                    id={option.value}
-                    value={option.value}
-                    onMouseMove={handleMouseEnter}
-                    onMouseOut={handleMouseLeave}
-                    onClick={handleOptionClick}
-                    className={`form__select-input-option ${
-                      isMouseEntered[option.value] ? 'form__select-input-option_mouseentered' : ''
-                    }`}
-                  >
-                    {option.text}
-                  </option>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="form__field form__field_type_checkbox">
-            <button
-              type="button"
-              id="accept"
-              name="accept"
-              onClick={handleClickAccept}
-              className={`form__accept-checkbox ${
-                isCheckboxChecked && 'form__accept-checkbox_checked'
-              }`}
-            ></button>
-
-            <p className="form__accept-title">
-              {ACCEPT_TITLE_BEGIN}
-              <button type="button" className="form__accept-link">
-                {ACCEPT_LINK_TEXT}
-              </button>
-              {ACCEPT_TITLE_END}
-            </p>
-          </div>
-        </div>
-        <button
-          type="submit"
-          disabled={!isFormValid || !selectedValue || !isCheckboxChecked}
-          className={submitButtonClassName}
-        >
-          {SUBMIT_BUTTON_TEXT}
-        </button>
-      </div>
-    </form>
+      </form>
+    </div>
   );
 }
 
