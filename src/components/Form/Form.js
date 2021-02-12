@@ -253,16 +253,18 @@ function Form({ handleSubmit }) {
                 type="text"
                 value={selectedValue || ''}
                 placeholder={LANGUAGE_INPUT_PLACEHOLDER}
-                onClick={!isSelectMenuOpen ? openSelectMenu : closeSelectMenu}
                 onFocus={() => !selectedValue && setSelectedValue(LANGUAGE_INPUT_PLACEHOLDER)}
                 onBlur={() => {
                   selectedValue === LANGUAGE_INPUT_PLACEHOLDER && setSelectedValue('');
-                  closeSelectMenu();
+                  /*closeSelectMenu();*/
                 }}
                 className="form__input form__input_type_default"
                 readOnly
               ></input>
-              <div className="form__select-input-button"></div>
+              <div
+                onClick={!isSelectMenuOpen ? openSelectMenu : closeSelectMenu}
+                className="form__select-input-button"
+              ></div>
             </label>
             <ul className={selectInputClassName}>
               {OPTIONS_LIST.map((option) => (

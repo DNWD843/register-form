@@ -152,13 +152,12 @@
   width: 30px;
   height: 30px;
   background-image: url('../../images/dropdown-icon.png');
-
   margin: 0;
   padding: 0;
-
   position: absolute;
   right: 11px;
   top: 37px;
+  cursor: pointer;
 }
 
 .form__select-input-options {
@@ -180,7 +179,7 @@
   border-radius: 6px;
 
   position: absolute;
-  top: 82px;
+  top: 84px;
   left: 0;
   right: 0;
   z-index: 5;
@@ -208,6 +207,7 @@
 
 .form__select-input-option_mouseentered {
   background: #ebf4f8;
+  cursor: pointer;
 }
 
 /************************************************************************/
@@ -223,6 +223,7 @@
   background: #fff;
   border: 1px solid #dbe2ea;
   box-shadow: 0px 4px 8px rgba(44, 39, 56, 0.04), 0px 20px 20px rgba(44, 39, 56, 0.04);
+  cursor: pointer;
 }
 
 .form__accept-checkbox_checked {
@@ -282,4 +283,16 @@
 .form__submit-button_enabled {
   background: #0880ae;
   color: #ebf4f8;
+}
+
+.form__submit-button_enabled:hover {
+  box-shadow: 0px 12px 24px rgba(44, 39, 56, 0.08), 0px 24px 48px rgba(44, 39, 56, 0.16);
+  cursor: pointer;
+}
+
+.form__submit-button_enabled:active {
+  border: 2px solid rgba(44, 39, 56, 0.86);
+  box-sizing: border-box;
+  box-shadow: 0px 2px 4px rgba(44, 39, 56, 0.0001), 0px 4px 8px rgba(44, 39, 56, 0.08);
+  padding: 16px 0;
 }
