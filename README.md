@@ -19,4 +19,4 @@ author: Dmitry Neklyudov
 `npm run jsdoc:build` - сборка документации в папку documentation
 
 **Посмотреть проект**  
-Посмотреть проект можно <a href="https://DNWD843.github.io/register-form/" target="_blank" rel="noreferrer noopener">ТУТ</a>
+Посмотреть проект можно <a href="https://DNWD843.github.io/register-form" target="_blank" rel="noreferrer noopener">ТУТ</a>
