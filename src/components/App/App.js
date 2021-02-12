@@ -8,7 +8,6 @@ import './App.css';
  * @since v.1.0.0
  * @returns {JSX}
  */
-
 function App() {
   /**
    * @method handleSubmitRegisterForm
