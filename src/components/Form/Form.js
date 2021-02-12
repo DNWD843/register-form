@@ -1,9 +1,17 @@
 import { forAppForm as config } from '../../configs/configForComponents';
 import { useState, useCallback, useEffect } from 'react';
-import { useHookWithValidation } from '../../hooks/useFormWithValidation';
+import { useFormWithValidation } from '../../hooks/useFormWithValidation';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import './Form.css';
+
+/**
+ * @module Form
+ * @description Компонент формы регистрации
+ * @param {Function} handleSubmit - обработчик сабмита формы регистрации
+ * @returns {JSX}
+ * @since v.1.0.0
+ */
 
 function Form({ handleSubmit }) {
   const {
@@ -25,7 +33,7 @@ function Form({ handleSubmit }) {
     SUBMIT_BUTTON_TEXT,
   } = config;
 
-  const { values, handleInputChange, errors, isFormValid, resetForm } = useHookWithValidation();
+  const { values, handleInputChange, errors, isFormValid, resetForm } = useFormWithValidation();
   const { name, email, phone } = values;
 
   const [isMouseEntered, setIsMouseEntered] = useState({});
@@ -57,16 +65,36 @@ function Form({ handleSubmit }) {
     'form__submit-button_disabled': !(isFormValid && selectedValue && isCheckboxChecked),
   });
 
+  /**
+   * @method closeSelectMenu
+   * @description Метод, закрывающий выпадающий список.
+   * @since v.1.0.0
+   * @public
+   */
   const closeSelectMenu = useCallback(() => {
     setIsSelectMenuOpen(false);
     setTimeout(() => setIsSelectMenuHidden(true), 300);
   }, []);
 
+  /**
+   * @method openSelectMenu
+   * @description Метод, открывающий выпадающий список
+   * @since v.1.0.0
+   * @public
+   */
   const openSelectMenu = useCallback(() => {
     setIsSelectMenuOpen(true);
     setTimeout(() => setIsSelectMenuHidden(false), 50);
   }, []);
 
+  /**
+   * @method handleMouseEnter
+   * @description Обработчик попадания курсора мыши в поле опции выпадающего списка.
+   *  Выделяет опцию, над которой находится курсор, другим цветом.
+   * @param {Event} evt - событие
+   * @since v.1.0.0
+   * @public
+   */
   const handleMouseEnter = useCallback(
     (evt) => {
       const { id } = evt.target;
@@ -75,6 +103,14 @@ function Form({ handleSubmit }) {
     [isMouseEntered],
   );
 
+  /**
+   * @method handleMouseLeave
+   * @description Обработчик выхода курсора из поля опции выпадающего списка.
+   *  Снимает выделение с опции.
+   * @param {Event} evt - событие
+   * @since v.1.0.0
+   * @public
+   */
   const handleMouseLeave = useCallback(
     (evt) => {
       const { id } = evt.target;
@@ -83,6 +119,13 @@ function Form({ handleSubmit }) {
     [isMouseEntered],
   );
 
+  /**
+   * @method handleOptionClick
+   * @description Обработчик клика по выбранной опции выпадающего списка.
+   * @param {Event} evt - событие
+   * @since v.1.0.0
+   * @public
+   */
   const handleOptionClick = useCallback(
     (evt) => {
       const { text } = evt.target;
@@ -92,6 +135,13 @@ function Form({ handleSubmit }) {
     [closeSelectMenu],
   );
 
+  /**
+   * @method handleClickAccept
+   * @description обработчик клика по чекбоксу принятия условий соглашения
+   * @param {Event} evt - событие
+   * @since v.1.0.0
+   * @public
+   */
   const handleClickAccept = useCallback(
     (evt) => {
       setIsCheckboxChecked(!isCheckboxChecked);
@@ -99,12 +149,25 @@ function Form({ handleSubmit }) {
     [isCheckboxChecked],
   );
 
+  /**
+   * @method clearFormInputs
+   * @description Метод очистки формы от всех выбранных и введенных значений.
+   * @since v.1.0.0
+   * @public
+   */
   const clearFormInputs = useCallback(() => {
     resetForm();
     setSelectedValue('');
     setIsCheckboxChecked(false);
   }, [resetForm]);
 
+  /**
+   * @method handleSubmitForm
+   * @description Обработчик сабмита формы
+   * @param {Event} evt - событие
+   * @since v.1.0.0
+   * @public
+   */
   const handleSubmitForm = useCallback(
     (evt) => {
       evt.preventDefault();
